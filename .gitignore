@@ -34,3 +34,6 @@
 *.exe
 *.out
 *.app
+
+# Copied files identifier
+*.Identifier
