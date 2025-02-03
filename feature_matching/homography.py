@@ -12,6 +12,10 @@ def show_image(title, img):
     plt.axis('off')
     #plt.show()
 
+def compute_psnr(original, compensated):
+    mse = np.mean((original - compensated) ** 2)
+    return 20 * np.log10(255.0 / np.sqrt(mse))
+
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
@@ -57,9 +61,14 @@ show_image("Inlier Matches After RANSAC", inlier_img)
 # Warp the second frame to align with the first frame
 height, width = gray1.shape
 aligned_frame2 = cv2.warpPerspective(frame2, H, (width, height))
+diff = abs(frame2 - aligned_frame2)
+#diff = abs(gray2 - cv2.cvtColor(aligned_frame2, cv2.COLOR_BGR2GRAY))
 
 # Display results
 show_image("Original Frame 1", frame1)
 show_image("Original Frame 2", frame2)
 show_image("Motion-Compensated Frame 2", aligned_frame2)
+show_image("diff", diff)
+psnr = compute_psnr(aligned_frame2, frame2)
+print(psnr)
 plt.show()
