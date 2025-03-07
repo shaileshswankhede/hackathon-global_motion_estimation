@@ -21,8 +21,11 @@ dname = os.path.dirname(abspath)
 os.chdir(dname)
 
 # Read two consecutive frames
-frame1 = cv2.imread('../resource/frame_0014.png')  # Replace with your file path
-frame2 = cv2.imread('../resource/frame_0015.png')  # Replace with your file path
+#frame1 = cv2.imread('../resource/frame_0014.png')  # Replace with your file path
+#frame2 = cv2.imread('../resource/frame_0015.png')  # Replace with your file path
+
+frame1 = cv2.imread('../resource/local_056.jpg')  # Replace with your file path
+frame2 = cv2.imread('../resource/local_057.jpg')  # Replace with your file path
 
 # Convert images to grayscale
 gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
