@@ -21,31 +21,29 @@ def normalize(value, min_val, max_val, target_min, target_max):
     value = np.clip(value, min_val, max_val)
     return target_min + (value - min_val) / (max_val - min_val) * (target_max - target_min)
 
-def compute_combined_dynamic_ratio(gray1, gray2, motion_vectors=None, inlier_ratio=None):
+def compute_combined_dynamic_ratio(gray1, gray2, keypoints1, keypoints2, motion_vectors=None, inlier_ratio=None):
     # 1. Scene Texture
     texture1 = cv2.Laplacian(gray1, cv2.CV_64F).var()
     texture2 = cv2.Laplacian(gray2, cv2.CV_64F).var()
     avg_texture = (texture1 + texture2) / 2
-    texture_ratio = normalize(avg_texture, 10, 50, 0.6, 0.8)
-    
-    print(texture_ratio)
+    texture_ratio = normalize(avg_texture, 10, 60, 0.8, 0.6)    # < 10:  # Low texture, > 50:  # High texture
 
     # 2. Motion Magnitude
     if motion_vectors is not None:
         avg_magnitude = np.mean(motion_vectors)
-        motion_ratio = normalize(avg_magnitude, 0, 20, 0.6, 0.8)
+        motion_ratio = normalize(avg_magnitude, 5, 30, 0.8, 0.7)  # < 5:  # Small motion, > 30:  # Large motion
     else:
         motion_ratio = 0.75  # Default value if motion not provided
 
     # 3. Keypoint Density
-    kp_density = len(gray1) * len(gray1[0])  # Assume keypoints distributed across pixels
-    keypoint_ratio = normalize(kp_density, 1000, 10000, 0.6, 0.8)
-    
-    print(kp_density)
+    numPixels = len(gray1) * len(gray1[0])
+    numKeypoints = len(keypoints1) + len(keypoints2) / 2
+    kp_density = numKeypoints / numPixels
+    keypoint_ratio = normalize(kp_density, 0.0001, 0.003, 0.8, 0.6)     # < 0.0001: Less keypoints, > 0.003: rich keypoints
 
     # 4. Inlier Ratio
     if inlier_ratio is not None:
-        inlier_based_ratio = normalize(inlier_ratio, 0.2, 0.8, 0.6, 0.8)
+        inlier_based_ratio = normalize(inlier_ratio, 0.3, 0.7, 0.8, 0.6)
     else:
         inlier_based_ratio = 0.75  # Default value if inlier ratio not available
 
@@ -65,11 +63,11 @@ os.chdir(dname)
 #frame1 = cv2.imread('../resource/frame_0014.png')  # Replace with your file path
 #frame2 = cv2.imread('../resource/frame_0015.png')  # Replace with your file path
 
-#frame1 = cv2.imread('../resource/local_056.jpg')  # Replace with your file path
-#frame2 = cv2.imread('../resource/local_057.jpg')  # Replace with your file path
+frame1 = cv2.imread('../resource/local_056.jpg')  # Replace with your file path
+frame2 = cv2.imread('../resource/local_057.jpg')  # Replace with your file path
 
-frame1 = cv2.imread('../resource/img_036.jpg')  # Replace with your file path
-frame2 = cv2.imread('../resource/img_037.jpg')  # Replace with your file path
+#frame1 = cv2.imread('../resource/img_036.jpg')  # Replace with your file path
+#frame2 = cv2.imread('../resource/img_037.jpg')  # Replace with your file path
 
 # Convert images to grayscale
 gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
@@ -80,15 +78,12 @@ orb = cv2.ORB_create(nfeatures=10000)
 keypoints1, descriptors1 = orb.detectAndCompute(gray1, None)
 keypoints2, descriptors2 = orb.detectAndCompute(gray2, None)
 
-print(len(keypoints1))
-print(len(keypoints1) / (len(gray1) * len(gray1[0])))   #keypoint ratio 0.002 - 0.005 ==> high, 0.0005 - 0.002 ==> med, < 0.0001 ==> low
-
 # Match features using Brute Force Matcher
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
 matches = bf.knnMatch(descriptors1, descriptors2, k=2)
 
 # Dynamically determine Lowe's ratio
-combined_ratio = compute_combined_dynamic_ratio(gray1, gray2)
+combined_ratio = compute_combined_dynamic_ratio(gray1, gray2, keypoints1, keypoints2)
 print(combined_ratio)
 
 # Apply Lowe's ratio test to remove poor matches
