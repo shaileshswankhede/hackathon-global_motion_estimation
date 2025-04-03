@@ -48,10 +48,13 @@ def compute_combined_dynamic_ratio(gray1, gray2, keypoints1, keypoints2, motion_
         inlier_based_ratio = 0.75  # Default value if inlier ratio not available
 
     # Weighted combination
-    combined_ratio = (0.3 * texture_ratio +
-                      0.3 * motion_ratio +
-                      0.2 * keypoint_ratio +
-                      0.2 * inlier_based_ratio)
+    #combined_ratio = (0.3 * texture_ratio +
+    #                  0.3 * motion_ratio +
+    #                  0.2 * keypoint_ratio +
+    #                  0.2 * inlier_based_ratio)
+    print(texture_ratio)
+    print(keypoint_ratio)
+    combined_ratio = (texture_ratio + keypoint_ratio) / 2
     
     return combined_ratio
 
@@ -74,7 +77,7 @@ gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 
 # Detect ORB features and compute descriptors
-orb = cv2.ORB_create(nfeatures=10000)
+orb = cv2.ORB_create(nfeatures=5000)
 keypoints1, descriptors1 = orb.detectAndCompute(gray1, None)
 keypoints2, descriptors2 = orb.detectAndCompute(gray2, None)
 
