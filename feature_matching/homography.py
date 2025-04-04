@@ -63,14 +63,29 @@ dname = os.path.dirname(abspath)
 os.chdir(dname)
 
 # Read two consecutive frames
-#frame1 = cv2.imread('../resource/frame_0014.png')  # Replace with your file path
-#frame2 = cv2.imread('../resource/frame_0015.png')  # Replace with your file path
+#frame1 = cv2.imread('../resource/frame_0014.png') 
+#frame2 = cv2.imread('../resource/frame_0015.png') 
 
-frame1 = cv2.imread('../resource/local_056.jpg')  # Replace with your file path
-frame2 = cv2.imread('../resource/local_057.jpg')  # Replace with your file path
+#frame1 = cv2.imread('../resource/local_056.jpg') 
+#frame2 = cv2.imread('../resource/local_057.jpg') 
 
-#frame1 = cv2.imread('../resource/img_036.jpg')  # Replace with your file path
-#frame2 = cv2.imread('../resource/img_037.jpg')  # Replace with your file path
+#frame1 = cv2.imread('../resource/img_036.jpg') 
+#frame2 = cv2.imread('../resource/img_037.jpg') 
+
+frame1 = cv2.imread('../resource/9I_Kpjcdw48/frame_002274.jpg') 
+frame2 = cv2.imread('../resource/9I_Kpjcdw48/frame_002275.jpg') 
+
+#frame1 = cv2.imread('../resource/B1xNOOJmAu8/frame_008754.jpg') 
+#frame2 = cv2.imread('../resource/B1xNOOJmAu8/frame_008755.jpg') 
+
+#frame1 = cv2.imread('../resource/MszwdOmEiPk/frame_000380.jpg') 
+#frame2 = cv2.imread('../resource/MszwdOmEiPk/frame_000381.jpg') 
+
+#frame1 = cv2.imread('../resource/vQ7jmoOKb6w/frame_024599.jpg') 
+#frame2 = cv2.imread('../resource/vQ7jmoOKb6w/frame_024600.jpg') 
+
+#frame1 = cv2.imread('../resource/Y8lChqjsV10/frame_001302.jpg') 
+#frame2 = cv2.imread('../resource/Y8lChqjsV10/frame_001303.jpg') 
 
 # Convert images to grayscale
 gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
@@ -105,6 +120,10 @@ print(H)
 
 # Filter inlier matches based on RANSAC result
 inlier_matches = [m for i, m in enumerate(good_matches) if mask[i]]
+
+print(len(good_matches))
+print(len(inlier_matches))
+print(len(inlier_matches) / len(good_matches))
 
 # Draw inlier matches
 inlier_img = cv2.drawMatches(frame1, keypoints1, frame2, keypoints2, inlier_matches, None, flags=2)
