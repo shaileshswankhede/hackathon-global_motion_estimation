@@ -72,8 +72,8 @@ os.chdir(dname)
 #frame1 = cv2.imread('../resource/img_036.jpg') 
 #frame2 = cv2.imread('../resource/img_037.jpg') 
 
-frame1 = cv2.imread('../resource/9I_Kpjcdw48/frame_002274.jpg') 
-frame2 = cv2.imread('../resource/9I_Kpjcdw48/frame_002275.jpg') 
+#frame1 = cv2.imread('../resource/9I_Kpjcdw48/frame_002274.jpg') 
+#frame2 = cv2.imread('../resource/9I_Kpjcdw48/frame_002275.jpg') 
 
 #frame1 = cv2.imread('../resource/B1xNOOJmAu8/frame_008754.jpg') 
 #frame2 = cv2.imread('../resource/B1xNOOJmAu8/frame_008755.jpg') 
@@ -85,7 +85,10 @@ frame2 = cv2.imread('../resource/9I_Kpjcdw48/frame_002275.jpg')
 #frame2 = cv2.imread('../resource/vQ7jmoOKb6w/frame_024600.jpg') 
 
 #frame1 = cv2.imread('../resource/Y8lChqjsV10/frame_001302.jpg') 
-#frame2 = cv2.imread('../resource/Y8lChqjsV10/frame_001303.jpg') 
+#frame2 = cv2.imread('../resource/Y8lChqjsV10/frame_001303.jpg')
+
+frame1 = cv2.imread('../resource/triangle.jpg') 
+frame2 = cv2.imread('../resource/triangleRight.jpg') 
 
 # Convert images to grayscale
 gray1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
