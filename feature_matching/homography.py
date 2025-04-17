@@ -98,7 +98,10 @@ gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 orb = cv2.ORB_create(nfeatures=5000)
 keypoints1, descriptors1 = orb.detectAndCompute(gray1, None)
 keypoints2, descriptors2 = orb.detectAndCompute(gray2, None)
+orb_kp1 = cv2.drawKeypoints(frame1, keypoints1, None, color=(0,255,0), flags=0)
+orb_kp2 = cv2.drawKeypoints(frame2, keypoints2, None, color=(0,255,0), flags=0)
 
+#'''
 # Match features using Brute Force Matcher
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
 matches = bf.knnMatch(descriptors1, descriptors2, k=2)
@@ -116,6 +119,17 @@ for m, n in matches:
 # Extract matched points
 points1 = np.float32([keypoints1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
 points2 = np.float32([keypoints2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+#'''
+
+# Code using BFMatcher crossCheck as True where we don't need Lowe's ratio test
+'''
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+matches = bf.match(descriptors1, descriptors2)
+good_matches = matches
+
+points1 = np.float32([keypoints1[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+points2 = np.float32([keypoints2[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
+'''
 
 # Estimate homography matrix using RANSAC (removes outliers)
 H, mask = cv2.findHomography(points2, points1, cv2.RANSAC, 5.0)
@@ -139,10 +153,12 @@ diff = abs(frame2 - aligned_frame2)
 #diff = abs(gray2 - cv2.cvtColor(aligned_frame2, cv2.COLOR_BGR2GRAY))
 
 # Display results
-show_image("Original Frame 1", frame1)
-show_image("Original Frame 2", frame2)
-show_image("Motion-Compensated Frame 2", aligned_frame2)
-show_image("diff", diff)
-psnr = compute_psnr(aligned_frame2, frame2)
-print(psnr)
+#show_image("Original Frame 1", frame1)
+#show_image("Original Frame 2", frame2)
+show_image("Original Frame 1 with keypoints", orb_kp1)
+show_image("Original Frame 2 with keypoints", orb_kp2)
+#show_image("Motion-Compensated Frame 2", aligned_frame2)
+#show_image("diff", diff)
+#psnr = compute_psnr(aligned_frame2, frame2)
+#print(psnr)
 plt.show()
